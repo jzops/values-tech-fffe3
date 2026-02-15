@@ -8,21 +8,59 @@ import { moreCompanies } from '../data/companies-more'
 import { allVCs } from '../data/vcs'
 import { extendedVCs } from '../data/vcs-extended'
 
-// Combine all companies
+// Image path helpers - check if local image exists, else return null
+const companyImages: Record<string, boolean> = {
+  'meta': true, 'google': true, 'amazon': true, 'apple': true, 'microsoft': true,
+  'tesla': true, 'netflix': true, 'nvidia': true, 'openai': true, 'anthropic': true,
+  'stripe': true, 'vercel': true, 'coinbase': true, 'airbnb': true, 'spotify': true,
+  'slack': true, 'notion': true, 'figma': true, 'canva': true, 'shopify': true,
+  'uber': true, 'lyft': true, 'doordash': true, 'github': true, 'discord': true,
+  'reddit': true, 'snap': true, 'pinterest': true, 'palantir': true, 'snowflake': true,
+  'databricks': true, 'spacex': true,
+}
+
+const vcImages: Record<string, boolean> = {
+  'a16z': true, 'sequoia': true, 'accel': true, 'benchmark': true, 
+  'kleiner-perkins': true, 'greylock': true, 'lsvp': true, 'lightspeed': true,
+  'general-catalyst': true, 'index-ventures': true, 'y-combinator': true,
+  'tiger-global': true, 'first-round': true, 'ribbit-capital': true, 'paradigm': true,
+}
+
+const personImages: Record<string, boolean> = {
+  'mark-zuckerberg': true, 'elon-musk': true, 'sundar-pichai': true, 'tim-cook': true,
+  'satya-nadella': true, 'sam-altman': true, 'dario-amodei': true, 'patrick-collison': true,
+  'guillermo-rauch': true, 'brian-armstrong': true, 'brian-chesky': true, 'marc-benioff': true,
+  'jack-dorsey': true, 'marc-andreessen': true, 'reid-hoffman': true,
+  'chamath-palihapitiya': true, 'garry-tan': true, 'david-sacks': true,
+}
+
+function getCompanyImage(slug: string): string | null {
+  return companyImages[slug] ? `/images/companies/${slug}.png` : null
+}
+
+function getVCImage(slug: string): string | null {
+  return vcImages[slug] ? `/images/vcs/${slug}.png` : null
+}
+
+function getPersonImage(slug: string): string | null {
+  return personImages[slug] ? `/images/people/${slug}.png` : null
+}
+
+// Combine all companies with images
 export const companies: Company[] = [
   ...allCompanies,
   ...extendedCompanies,
   ...moreCompanies,
-]
+].map(c => ({ ...c, logo_url: c.logo_url || getCompanyImage(c.slug) }))
 
-// Combine all VCs
+// Combine all VCs with images
 export const vcs: VC[] = [
   ...allVCs,
   ...extendedVCs,
-]
+].map(v => ({ ...v, logo_url: v.logo_url || getVCImage(v.slug) }))
 
 // People - Tech executives and founders
-export const people: Person[] = [
+const peopleRaw: Person[] = [
   { id: '1', name: 'Mark Zuckerberg', slug: 'mark-zuckerberg', photo_url: null, current_company_id: '1', current_role: 'CEO', twitter_handle: 'finkd', linkedin_url: null, bio: 'Co-founder and CEO of Meta. Built Facebook in his Harvard dorm room.' },
   { id: '2', name: 'Elon Musk', slug: 'elon-musk', photo_url: null, current_company_id: '6', current_role: 'CEO', twitter_handle: 'elonmusk', linkedin_url: null, bio: 'CEO of Tesla and SpaceX. Owner of X (Twitter). Head of DOGE.' },
   { id: '3', name: 'Sundar Pichai', slug: 'sundar-pichai', photo_url: null, current_company_id: '2', current_role: 'CEO', twitter_handle: 'sundarpichai', linkedin_url: null, bio: 'CEO of Google and Alphabet. Joined Google in 2004.' },
@@ -64,6 +102,12 @@ export const people: Person[] = [
   { id: '39', name: 'David Sacks', slug: 'david-sacks', photo_url: null, current_company_id: null, current_role: 'VC', twitter_handle: 'DavidSacks', linkedin_url: null, bio: 'Craft Ventures founder. PayPal and Yammer alumnus.' },
   { id: '40', name: 'Jason Calacanis', slug: 'jason-calacanis', photo_url: null, current_company_id: null, current_role: 'Angel Investor', twitter_handle: 'Jason', linkedin_url: null, bio: 'Angel investor and podcast host. Early Uber investor.' },
 ]
+
+// Add images to people
+export const people: Person[] = peopleRaw.map(p => ({ 
+  ...p, 
+  photo_url: p.photo_url || getPersonImage(p.slug) 
+}))
 
 // Stances - Comprehensive stance database
 export const stances: Stance[] = [
